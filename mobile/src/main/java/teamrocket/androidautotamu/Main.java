@@ -1,6 +1,5 @@
 package teamrocket.androidautotamu;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -25,8 +24,12 @@ import static java.lang.System.currentTimeMillis;
 
 public class Main extends Activity implements SensorEventListener {
     private float mLastX, mLastY, mLastZ;
+    private double arrayV[] = new double[1000];
+    private double crashThresh = 2 * 9.8;
     private long time = -1;
     private int count = 0;
+    private double AccSec = 0;
+    //private int saveCount = 0;
     private boolean mInitialized;
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
@@ -47,11 +50,13 @@ public class Main extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mInitialized = false;
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
+            mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+
+
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
@@ -72,24 +77,47 @@ public class Main extends Activity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        double arrayV[] = new double[1000];
 
         TextView tvX = (TextView) findViewById(R.id.x_axis);
         TextView tvY = (TextView) findViewById(R.id.y_axis);
         TextView tvZ = (TextView) findViewById(R.id.z_axis);
         TextView ta = (TextView) findViewById(R.id.a_Total);
         TextView tt = (TextView) findViewById(R.id.a_Time);
+
         TextView debugOne = (TextView) findViewById(R.id.d_One);
+        /*
         TextView debugTwo = (TextView) findViewById(R.id.d_Two);
+        */
         TextView debugThree = (TextView) findViewById(R.id.d_Thre);
         TextView debugFour = (TextView) findViewById(R.id.d_Four);
+        /*
+        TextView saveValue = (TextView) findViewById(R.id.v_Save);
+        TextView valueOne = (TextView) findViewById(R.id.v_One);
+        TextView valueTwo = (TextView) findViewById(R.id.v_Two);
+        TextView valueThree = (TextView) findViewById(R.id.v_Three);
+        TextView valueFour = (TextView) findViewById(R.id.v_Four);
+        TextView valueFive = (TextView) findViewById(R.id.v_Five);
+        TextView valueSix = (TextView) findViewById(R.id.v_Six);
+        TextView valueSeven = (TextView) findViewById(R.id.v_Seven);
+        TextView valueEight = (TextView) findViewById(R.id.v_Eight);
+        TextView valueNine = (TextView) findViewById(R.id.v_Nine);
+        TextView valueTen = (TextView) findViewById(R.id.v_Ten);
+        TextView valueEleven = (TextView) findViewById(R.id.v_Eleven);
+        TextView valueTweleve = (TextView) findViewById(R.id.v_Tweleve);
+        TextView valueThirteen = (TextView) findViewById(R.id.v_Thirteen);
+        TextView valueFourteen = (TextView) findViewById(R.id.v_Fourteen);
+        TextView valueFifteen = (TextView) findViewById(R.id.v_Fifteen);
+        TextView valueSixteen = (TextView) findViewById(R.id.v_Sixteen);
+        TextView valueSeventeen = (TextView) findViewById(R.id.v_Seventeen);
+        TextView valueEighteen = (TextView) findViewById(R.id.v_Eighteen);
+        */
         ImageView iv = (ImageView) findViewById(R.id.image);
 
 
         float x = event.values[0];
         float y = event.values[1];
         float z = event.values[2];
-        double totalAcc = 0;
+        double totalAcc;
         double avgTime = 0;
         if (!mInitialized) {
             mLastX = x;
@@ -114,17 +142,47 @@ public class Main extends Activity implements SensorEventListener {
             totalAcc = pow((double) deltaX, 2) + pow((double) deltaY, 2) + pow((double) deltaZ, 2);
             totalAcc = sqrt(totalAcc);
 
-            long whyDammit = currentTimeMillis();
+            long curTime = currentTimeMillis();
 
             if (time != -1){
-                if(whyDammit > time + 1000){
+                if(curTime > time + 1000){/*
                     debugThree.setText("In If");
+                    if(saveCount == 10){ */
+                    if(count != 0) {
+                        for (int i = 0; i < count; i++) {
+                            avgTime = avgTime + arrayV[i];
+                        }
+                        AccSec = avgTime / count;
+                    }else{
+                        AccSec = 0;
+                    }
+                    /*
+                        saveValue.setText(Double.toString(avgTime/count));
+                        valueOne.setText(Double.toString(arrayV[0]));
+                        valueTwo.setText(Double.toString(arrayV[1]));
+                        valueThree.setText(Double.toString(arrayV[2]));
+                        valueFour.setText(Double.toString(arrayV[3]));
+                        valueFive.setText(Double.toString(arrayV[4]));
+                        valueSix.setText(Double.toString(arrayV[5]));
+                        valueSeven.setText(Double.toString(arrayV[6]));
+                        valueEight.setText(Double.toString(arrayV[7]));
+                        valueNine.setText(Double.toString(arrayV[8]));
+                        valueTen.setText(Double.toString(arrayV[9]));
+                        valueEleven.setText(Double.toString(arrayV[10]));
+                        valueTweleve.setText(Double.toString(arrayV[11]));
+                        valueThirteen.setText(Double.toString(arrayV[12]));
+                        valueFourteen.setText(Double.toString(arrayV[13]));
+                        valueFifteen.setText(Double.toString(arrayV[14]));
+                        valueSixteen.setText(Double.toString(arrayV[15]));
+                        valueSeventeen.setText(Double.toString(arrayV[16]));
+                        valueEighteen.setText(Double.toString(arrayV[17]));
+                    }*/
                     time = -1;
-
+                    //saveCount++;
                     count = 0;
                     arrayV[0]=0;
                 }else{
-                    debugThree.setText("In Else");
+                    /*debugThree.setText("In Else");*/
                     arrayV[count] = totalAcc;
                     count++;
                 }
@@ -136,11 +194,10 @@ public class Main extends Activity implements SensorEventListener {
             }
             avgTime = 0;
             for (int i = 0; i < count; i++) {
-              //  debugOne.setText(Double.toString(avgTime));
                 avgTime = avgTime + arrayV[i];
             }
-            debugOne.setText(Double.toString(count));
-            debugTwo.setText(Double.toString(count));
+           /* debugOne.setText(Double.toString(count));
+            debugTwo.setText(Double.toString(count)); */
 
             if(avgTime != 0) {
                 avgTime = avgTime / count;
@@ -152,6 +209,21 @@ public class Main extends Activity implements SensorEventListener {
             ta.setText(Double.toString(totalAcc));
             tt.setText(Double.toString(avgTime));
             iv.setVisibility(View.VISIBLE);
+
+
+
+            if(AccSec >= crashThresh){
+                debugOne.setText("Crash Event");
+                debugThree.setText(Double.toString(AccSec));
+                debugFour.setText(Double.toString(crashThresh));
+                //System.exit(0);
+            }
+
+       /*     if(crashThresh <= avgTime){
+                throw crashException;
+            }*/
+
+
 //            if (deltaX > deltaY) {
 //                iv.setImageResource(R.drawable.horizontal);
 //            } else if (deltaY > deltaX) {
@@ -162,14 +234,10 @@ public class Main extends Activity implements SensorEventListener {
         }
     }
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
-                .setName("Main Page") // TODO: Define a title for the content shown.
-                // TODO: Make sure this auto-generated URL is correct.
+                .setName("Main Page")
                 .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
                 .build();
         return new Action.Builder(Action.TYPE_VIEW)
@@ -182,8 +250,7 @@ public class Main extends Activity implements SensorEventListener {
     public void onStart() {
         super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
@@ -192,8 +259,7 @@ public class Main extends Activity implements SensorEventListener {
     public void onStop() {
         super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
@@ -203,3 +269,4 @@ public class Main extends Activity implements SensorEventListener {
 //
 //    }
 }
+
