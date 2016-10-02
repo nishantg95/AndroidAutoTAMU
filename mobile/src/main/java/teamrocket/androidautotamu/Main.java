@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -29,6 +30,7 @@ public class Main extends Activity implements SensorEventListener {
     private long time = -1;
     private int count = 0;
     private double AccSec = 0;
+    private int flag = 0;
     //private int saveCount = 0;
     private boolean mInitialized;
     private SensorManager mSensorManager;
@@ -83,6 +85,7 @@ public class Main extends Activity implements SensorEventListener {
         TextView tvZ = (TextView) findViewById(R.id.z_axis);
         TextView ta = (TextView) findViewById(R.id.a_Total);
         TextView tt = (TextView) findViewById(R.id.a_Time);
+
 
         TextView debugOne = (TextView) findViewById(R.id.d_One);
         /*
@@ -203,21 +206,45 @@ public class Main extends Activity implements SensorEventListener {
                 avgTime = avgTime / count;
             }
 
+
+            Button button = (Button) findViewById(R.id.Cbutton);
+
+
+            if(AccSec >= crashThresh){
+
+                debugOne.setText("Crash Event");
+                debugThree.setText(Double.toString(AccSec));
+                debugFour.setText(Double.toString(crashThresh));
+
+
+                button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // Do something in response to button click
+                        flag = 1;
+                    }
+                });
+                long breakTime = currentTimeMillis();
+                long trackTime;
+                    button.setVisibility(View.VISIBLE);
+                    trackTime = currentTimeMillis();
+                    if(breakTime + 10000 < trackTime) {
+                        //Contact Authorities
+                        System.exit(0);
+                }
+
+            }
+            if(flag == 1) {
+                //button pressed
+                button.setVisibility(View.INVISIBLE);
+            }
+
             tvX.setText(Float.toString(deltaX));
             tvY.setText(Float.toString(deltaY));
             tvZ.setText(Float.toString(deltaZ));
             ta.setText(Double.toString(totalAcc));
             tt.setText(Double.toString(avgTime));
             iv.setVisibility(View.VISIBLE);
-
-
-
-            if(AccSec >= crashThresh){
-                debugOne.setText("Crash Event");
-                debugThree.setText(Double.toString(AccSec));
-                debugFour.setText(Double.toString(crashThresh));
-                //System.exit(0);
-            }
 
        /*     if(crashThresh <= avgTime){
                 throw crashException;
