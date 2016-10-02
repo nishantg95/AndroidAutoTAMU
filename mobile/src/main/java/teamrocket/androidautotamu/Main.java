@@ -12,6 +12,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
+
 public class Main extends Activity implements SensorEventListener {
     private float mLastX, mLastY, mLastZ;
     private boolean mInitialized; private SensorManager mSensorManager; private Sensor mAccelerometer; private final float NOISE = (float) 2.0;
@@ -44,10 +48,12 @@ public class Main extends Activity implements SensorEventListener {
         TextView tvX= (TextView)findViewById(R.id.x_axis);
         TextView tvY= (TextView)findViewById(R.id.y_axis);
         TextView tvZ= (TextView)findViewById(R.id.z_axis);
+        TextView ta= (TextView)findViewById(R.id.a_Total);
         ImageView iv = (ImageView)findViewById(R.id.image);
         float x = event.values[0];
         float y = event.values[1];
         float z = event.values[2];
+        double totalAcc = 0;
         if (!mInitialized) {
             mLastX = x;
             mLastY = y;
@@ -55,6 +61,7 @@ public class Main extends Activity implements SensorEventListener {
             tvX.setText("0.0");
             tvY.setText("0.0");
             tvZ.setText("0.0");
+            ta.setText("0.0");
             mInitialized = true;
         } else {
             float deltaX = Math.abs(mLastX - x);
@@ -66,9 +73,12 @@ public class Main extends Activity implements SensorEventListener {
             mLastX = x;
             mLastY = y;
             mLastZ = z;
+            totalAcc = pow((double)deltaX, 2) + pow((double)deltaY, 2) + pow((double)deltaZ, 2);
+            totalAcc = sqrt(totalAcc);
             tvX.setText(Float.toString(deltaX));
             tvY.setText(Float.toString(deltaY));
             tvZ.setText(Float.toString(deltaZ));
+            ta.setText(Double.toString(totalAcc));
             iv.setVisibility(View.VISIBLE);
 //            if (deltaX > deltaY) {
 //                iv.setImageResource(R.drawable.horizontal);
