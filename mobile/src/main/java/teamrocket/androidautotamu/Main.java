@@ -211,27 +211,28 @@ public class Main extends Activity implements SensorEventListener {
 
 
             if(AccSec >= crashThresh){
-
+                //button.setVisibility(View.VISIBLE);
+                
                 debugOne.setText("Crash Event");
                 debugThree.setText(Double.toString(AccSec));
                 debugFour.setText(Double.toString(crashThresh));
 
 
-                button.setVisibility(View.VISIBLE);
+
                 button.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         // Do something in response to button click
                         flag = 1;
                     }
                 });
-                long breakTime = currentTimeMillis();
-                long trackTime;
+               // long breakTime = currentTimeMillis();
+               // long trackTime;
                     button.setVisibility(View.VISIBLE);
-                    trackTime = currentTimeMillis();
-                    if(breakTime + 10000 < trackTime) {
+                  //  trackTime = currentTimeMillis();
+                  //  if(breakTime + 10000 < trackTime) {
                         //Contact Authorities
-                        System.exit(0);
-                }
+                   //     System.exit(0);
+               // }
 
             }
             if(flag == 1) {
