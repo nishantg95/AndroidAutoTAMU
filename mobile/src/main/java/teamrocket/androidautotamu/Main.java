@@ -141,16 +141,20 @@ public class Main extends Activity implements SensorEventListener {
 //
 //    }
 }
-
-//class PrimeRun implements Runnable {
-//    long minPrime;
-//    PrimeRun(long minPrime) {
-//        this.minPrime = minPrime;
+//
+//class Countdown implements Runnable {
+//    Countdown() {
 //    }
 //
 //    public void run() {
 //        // compute primes larger than minPrime
-//        . . .
+//        Date currentTime = new Date();
+//        long LcurrentTime = currentTime.getTime();
+//        long extra = LcurrentTime+100;
+//        Boolean flag = false;
+//        while(LcurrentTime<extra){
+//            LcurrentTime= currentTime.getTime();
+//            if(flag == )
+//        }
 //    }
-//}
-//
+}
