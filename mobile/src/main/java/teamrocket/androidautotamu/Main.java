@@ -28,6 +28,7 @@ public class Main extends Activity implements SensorEventListener {
     private float avgx =0, avgy=0, avgz=0;
     private Date startTime;
     private long startTimeLong;
+    private int sampleCount = 0;
     /** Called when the activity is first created. */
 
     @Override
@@ -94,7 +95,8 @@ public class Main extends Activity implements SensorEventListener {
             avgx += deltaX;
             avgy += deltaY;
             avgz += deltaZ;
-            double avgacceleration = (double)Math.sqrt(Math.pow(avgx/deltaT, 2) + Math.pow(avgy/deltaT, 2) + Math.pow(avgz/deltaT, 2));
+            sampleCount++;
+            double avgacceleration = (double)Math.sqrt(Math.pow(avgx/sampleCount, 2) + Math.pow(avgy/sampleCount, 2) + Math.pow(avgz/sampleCount, 2));
             mLastX = x;
             mLastY = y;
             mLastZ = z;
