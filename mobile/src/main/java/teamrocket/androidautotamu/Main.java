@@ -18,6 +18,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import static teamrocket.androidautotamu.R.id.time;
@@ -29,6 +30,8 @@ public class Main extends Activity implements SensorEventListener {
     private Date startTime;
     private long startTimeLong;
     private int sampleCount = 0;
+    private double crashThresh = 2 * 9.8;
+
     /** Called when the activity is first created. */
 
     @Override
@@ -62,7 +65,8 @@ public class Main extends Activity implements SensorEventListener {
         TextView tvZ= (TextView)findViewById(R.id.z_axis);
         TextView tvAccel = (TextView) findViewById(R.id.acceleration);
         TextView tvVel = (TextView) findViewById(R.id.velocity);
-
+        TextView warning = (TextView)findViewById(R.id.warning);
+        warning.setText("Collision warning");
         ImageView iv = (ImageView)findViewById(R.id.image);
         float x = event.values[0];
         float y = event.values[1];
@@ -107,8 +111,19 @@ public class Main extends Activity implements SensorEventListener {
             tvAccel.setText(acceleration+"m/s^2");
             velocity = avgacceleration /deltaT;
             tvVel.setText(velocity+" m/s"+"\n"+velocity * 2.2374+" miles/hour");
-
-            Log.d("",deltaX + "\t" + deltaY + "\t" + deltaZ + "\t" + acceleration);
+            if(acceleration >= crashThresh) {
+                tvX.setVisibility(View.INVISIBLE);
+                tvY.setVisibility(View.INVISIBLE);
+                tvZ.setVisibility(View.INVISIBLE);
+                tvAccel.setVisibility(View.INVISIBLE);
+                tvVel.setVisibility(View.INVISIBLE);
+                TextView filler1 = (TextView)findViewById(R.id.filler1);
+                filler1.setVisibility(View.INVISIBLE);
+                TableLayout table = (TableLayout)findViewById(R.id.table);
+                table.setVisibility(View.INVISIBLE);
+                warning.setVisibility(View.VISIBLE);
+            }
+                Log.d("",deltaX + "\t" + deltaY + "\t" + deltaZ + "\t" + acceleration);
 //            hj6
             //iv.setVisibility(View.VISIBLE);
 //            if (deltaX > deltaY) {
@@ -126,3 +141,16 @@ public class Main extends Activity implements SensorEventListener {
 //
 //    }
 }
+
+//class PrimeRun implements Runnable {
+//    long minPrime;
+//    PrimeRun(long minPrime) {
+//        this.minPrime = minPrime;
+//    }
+//
+//    public void run() {
+//        // compute primes larger than minPrime
+//        . . .
+//    }
+//}
+//
