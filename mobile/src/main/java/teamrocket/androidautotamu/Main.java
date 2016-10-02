@@ -40,7 +40,7 @@ public class Main extends Activity implements SensorEventListener {
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
         startTime = new Date();
-        startTimeLong =startTime.getTime();
+        startTimeLong = startTime.getTime();
     }
     protected void onResume() {
         super.onResume();
@@ -94,7 +94,7 @@ public class Main extends Activity implements SensorEventListener {
             avgx += deltaX;
             avgy += deltaY;
             avgz += deltaZ;
-            double avgacceleration = (double)Math.sqrt(Math.pow(avgx, 2) + Math.pow(avgy, 2) + Math.pow(avgz, 2));
+            double avgacceleration = (double)Math.sqrt(Math.pow(avgx/deltaT, 2) + Math.pow(avgy/deltaT, 2) + Math.pow(avgz/deltaT, 2));
             mLastX = x;
             mLastY = y;
             mLastZ = z;
